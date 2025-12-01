@@ -1,0 +1,37 @@
+// 2. Display all the node values in a circular linked list, repeating value of head node at the
+// end too.
+#include<iostream>
+using namespace std;
+class Node{
+    public:
+    int val;
+    Node* next;
+    Node(int val){
+        this->val=val;
+    }
+};
+void display(Node* root){
+    Node* temp=root;
+    while(temp->next!=root){
+        cout<<temp->val<<" ";
+        temp=temp->next;
+    }
+    cout<<temp->val<<" "<<temp->next->val;
+    return;
+    
+}
+int main(){
+    Node* a=new Node(20);
+    Node* b=new Node(100);
+    Node* c=new Node(40);
+    Node* d=new Node(80);
+    Node* e=new Node(60);
+    a->next=b;
+    b->next=c;
+    c->next=d;
+    d->next=e;
+    e->next=a;
+    display(a);
+    return 0;
+    
+}
