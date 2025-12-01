@@ -1,0 +1,91 @@
+#include<iostream>
+#include<list>
+#include<unordered_set>
+#include<vector>
+#include<queue>
+#include<unordered_map>
+#include<algorithm>
+using namespace std;
+
+void add_1(int src,int dest,vector<list<int>>&a,bool a1=true){
+    a[src].push_back(dest);
+    a[dest].push_back(src); // because they are bidirectional
+}
+int get_p(vector<int>&parent,int a){
+    if(parent[a]==a) return a;
+    return parent[a]=get_p(parent,parent[a]);
+}
+void Union(vector<int>&parent,vector<int>&rank,int src1,int src2){
+    int a1=get_p(parent,src1);
+    int b1=get_p(parent,src2);
+    if(a1==b1) return;
+    if(rank[a1]>rank[b1]){
+        rank[a1]++;
+        parent[b1]=a1;
+        
+    }
+    else{
+        rank[b1]++;
+        parent[a1]=b1;
+        
+    }
+}
+bool cmp(vector<int>a,vector<int>b){
+    return a[2]<b[2];
+}
+int kruskals(vector<vector<int>>&a1,vector<int>&parent,vector<int>&rank,int v){
+    int i=0;
+    int total_edges=0;
+    int result=0;
+    sort(a1.begin(),a1.end(),cmp);
+    for(int i=0;i<a1.size();i++){
+        cout<<a1[i][2]<<" ";
+    }
+    cout<<endl;
+    while(total_edges<v && i<a1.size()){
+        auto cell=a1[i];
+        int a1=get_p(parent,cell[0]);
+        int a2=get_p(parent,cell[1]);
+        if(a1==a2){
+            i++;
+            continue;
+        }
+        total_edges++;
+        Union(parent,rank,cell[0],cell[1]);
+        result+=cell[2];
+        i++;
+        
+        
+        
+    }
+    return result;
+    
+}
+
+int main(){
+    vector<vector<int>>a;
+    int v;
+
+    cout<<"Enter the number of vertex";
+    cin>>v;
+    
+    int e;
+    cout<<"Enter the number of edges:";
+    cin>>e;
+    vector<int>parent(v);
+    for(int i=0;i<v;i++){
+        parent[i]=i;
+    }
+    vector<int>rank(v,0);
+    for(int i=0;i<e;i++){
+        int src,dest,wt;
+        cin>>src>>dest>>wt;
+        a.push_back({src,dest,wt});
+    }
+    unordered_set<int>s;
+    int a1=0;
+    int result=kruskals(a,parent,rank,v);
+    cout<<result;
+    return 0;
+
+}
