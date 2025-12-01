@@ -1,0 +1,34 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+void heapsort(int arr[],int a,int n){
+    int i=a;
+    
+    while(i<=n/2){
+        int left_child=2*i;
+        int right_child=2*i+1;
+        if(arr[left_child]<arr[right_child] && arr[left_child]<arr[i]){
+            swap(arr[left_child],arr[i]);
+            i=left_child;
+        }
+        else if(arr[right_child]<arr[left_child] && arr[right_child]<arr[i]){
+            swap(arr[right_child],arr[i]);
+            i=right_child;
+            
+        }
+        else{
+            break;
+        }
+    }
+}
+int main(){
+    int arr[8]={-1,1,4,5,2,3,6,7};
+    int n=7;
+    for(int i=n/2;i>=1;i--){
+    heapsort(arr,i,7);
+    }
+    for(int i=1;i<8;i++){
+        cout<<arr[i]<<" ";
+    }
+    return 0;
+}
