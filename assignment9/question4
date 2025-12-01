@@ -1,0 +1,66 @@
+#include<iostream>
+#include<vector>
+#include<list>
+#include<unordered_map>
+#include<unordered_set>
+#include<queue>
+#include<climits>
+using namespace std;
+void add_edge(vector<list<pair<int,int>>>&graph,int src,int dest,int wt){
+    graph[src].push_back({dest,wt});
+    graph[dest].push_back({src,wt});
+}
+int find_shortest_distance(vector<list<pair<int,int>>>&graph,int src,int dest){
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pq;
+    unordered_set<int>s;
+    unordered_map<int,int>mp;
+    for(int i=0;i<graph.size();i++){
+        mp[i]=INT_MAX;
+    }
+    mp[src]=0;
+    vector<int>via(graph.size());
+    via[src]=0;
+    pq.push({0,src});
+    while(pq.size()>0){
+        auto cell=pq.top();
+        pq.pop();
+        if(s.find(cell.second)!=s.end()) continue; // means visited -> got the best smallest path from the node
+        s.insert(cell.second);
+        for(auto neighbour:graph[cell.second]){
+            if(s.find(neighbour.first)==s.end() && (mp[cell.second]+neighbour.second)<mp[neighbour.first]){
+                pq.push({mp[cell.second]+neighbour.second,neighbour.first});
+                via[neighbour.first]=cell.second; // cell.second is the node through which we reach there
+                mp[neighbour.first]=mp[cell.second]+neighbour.second;
+
+            }
+        }
+    }
+    for(int i=0;i<graph.size();i++){
+        cout<<mp[i]<<" ";
+    }
+    int result;
+    result=mp[dest];
+    return result;
+
+}
+
+int main(){
+    vector<list<pair<int,int>>>graph;
+    int n;//number of vertices
+    int m;// number of edges
+    cin>>n>>m;
+    graph.resize(n);
+    for(int i=0;i<m;i++){
+        int src,dest,wt;
+        cin>>src>>dest>>wt;
+        add_edge(graph,src,dest,wt);
+    }
+    int src,dest;
+    cin>>src>>dest;
+    int distance=find_shortest_distance(graph,src,dest);
+    cout<<"Minimum distance is:"<<distance;
+    return 0;
+
+
+
+}
