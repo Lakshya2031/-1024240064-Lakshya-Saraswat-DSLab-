@@ -1,0 +1,97 @@
+#include<iostream>
+using namespace std;
+
+struct Node{
+    int data;
+    Node *left, *right;
+};
+
+Node* insertNode(Node *r, int x){
+    if(r == NULL) return new Node{x,NULL,NULL};
+    if(x < r->data) r->left = insertNode(r->left, x);
+    else if(x > r->data) r->right = insertNode(r->right, x);
+    return r;
+}
+
+Node* searchRec(Node *r, int x){
+    if(r == NULL || r->data == x) return r;
+    if(x < r->data) return searchRec(r->left, x);
+    return searchRec(r->right, x);
+}
+
+Node* searchNonRec(Node *r, int x){
+    while(r){
+        if(r->data == x) return r;
+        else if(x < r->data) r = r->left;
+        else r = r->right;
+    }
+    return NULL;
+}
+
+Node* findMin(Node *r){
+    while(r && r->left) r = r->left;
+    return r;
+}
+
+Node* findMax(Node *r){
+    while(r && r->right) r = r->right;
+    return r;
+}
+
+Node* successor(Node *r, int x){
+    Node *curr = searchRec(r, x);
+    if(curr == NULL) return NULL;
+    if(curr->right) return findMin(curr->right);
+    Node *succ = NULL;
+    Node *t = r;
+    while(t){
+        if(x < t->data){
+            succ = t;
+            t = t->left;
+        } else if(x > t->data){
+            t = t->right;
+        } else break;
+    }
+    return succ;
+}
+
+Node* predecessor(Node *r, int x){
+    Node *curr = searchRec(r, x);
+    if(curr == NULL) return NULL;
+    if(curr->left) return findMax(curr->left);
+    Node *pred = NULL;
+    Node *t = r;
+    while(t){
+        if(x > t->data){
+            pred = t;
+            t = t->right;
+        } else if(x < t->data){
+            t = t->left;
+        } else break;
+    }
+    return pred;
+}
+
+int main(){
+    Node *root = NULL;
+    int n, x;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        cin>>x;
+        root = insertNode(root, x);
+    }
+    int key;
+    cin>>key;
+    Node *a = searchRec(root, key);
+    Node *b = searchNonRec(root, key);
+    if(a) cout<<"Found\n"; else cout<<"Not Found\n";
+    Node *mn = findMin(root);
+    Node *mx = findMax(root);
+    if(mn) cout<<mn->data<<endl;
+    if(mx) cout<<mx->data<<endl;
+    Node *s = successor(root, key);
+    if(s) cout<<s->data<<endl;
+    Node *p = predecessor(root, key);
+    if(p) cout<<p->data<<endl;
+    return 0;
+}
