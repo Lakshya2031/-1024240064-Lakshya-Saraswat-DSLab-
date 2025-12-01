@@ -1,0 +1,56 @@
+#include<iostream>
+using namespace std;
+class Node{
+public:
+    char val;
+    Node* next;
+    Node* prev;
+    Node(int val){
+        this->val=val;
+        this->next=NULL;
+        this->prev=NULL;
+    }
+};
+bool pallindrome_check(Node* a,int count,Node* b){
+    Node* temp1=a;
+    Node* temp2=b;
+    int c=0;
+    while(c!=(c/2)){
+        if(temp1->val!=temp2->val) return false;
+        c++;
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+    return true;
+    
+}
+int main(){
+    Node* a=new Node('L');
+    Node* b=new Node('E');
+    Node* c=new Node('V');
+    Node* d=new Node('E');
+    Node* e=new Node('L');
+    a->next=b;
+    a->prev=NULL;
+    b->next=c;
+    b->prev=a;
+    c->next=d;
+    c->prev=b;
+    d->next=e;
+    d->prev=c;
+    e->next=NULL;
+    e->prev=d;
+    Node* temp=a;
+    int count=0;
+    while(temp->next!=NULL){
+        count++;
+        temp=temp->next;
+        
+    }
+    count++;
+    bool a1=pallindrome_check(a,count,temp);
+    cout<<a1;
+    return 0;
+    
+    
+}
