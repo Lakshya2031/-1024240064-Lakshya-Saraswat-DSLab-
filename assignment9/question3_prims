@@ -1,0 +1,68 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define pp pair<int,int>
+vector<list<pp>>graph;
+void add_edge(int src,int dest,int wt,bool flag=true){
+    graph[src].push_back({dest,wt});
+    graph[dest].push_back({src,wt});
+}
+
+ll prims(int src){
+    unordered_set<int>visited;
+    vector<int>parent(graph.size());
+    unordered_map<int,int>mp;
+    priority_queue<pp,vector<pp>,greater<pp>>pq;// min heap
+    for(int i=0;i<graph.size();i++){
+        mp[i]=INT_MAX;
+    }
+    pq.push({0,src});
+    mp[src]=0;
+    int total_edges=0;
+    int result=0;
+    while(total_edges<graph.size() && pq.size()>0){
+        auto cell=pq.top();
+        pq.pop();
+        if(visited.find(cell.second)!=visited.end()){
+            continue;
+        }
+        else{
+            visited.insert(cell.second);
+            total_edges++;
+            result+=cell.first;
+            
+            
+            for(auto neighbour:graph[cell.second]){
+                if(visited.find(neighbour.first)==visited.end() && neighbour.second<mp[neighbour.first]){
+                    pq.push({neighbour.second,neighbour.first});
+                    parent[neighbour.first]=cell.second;
+                    mp[neighbour.first]=neighbour.second;
+                }
+                
+            }
+            
+
+            
+
+        }
+
+    }
+    return result;
+}
+
+int main(){
+    int n,m;
+    cin>>n>>m;
+    graph.resize(n,list<pp>());
+    for(int i=0;i<m;i++){
+        int src,dest,wt;
+        cin>>src>>dest>>wt;
+        add_edge(src,dest,wt);
+    }
+    int src;
+    cin>>src;
+    ll a=prims(src);
+    cout<<a;
+    return 0;
+
+}
