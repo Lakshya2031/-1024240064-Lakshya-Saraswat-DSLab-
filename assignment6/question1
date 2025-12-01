@@ -1,1 +1,246 @@
+#include<iostream>
+using namespace std;
 
+struct CNode{
+    int data;
+    CNode *next;
+};
+
+CNode *chead = NULL;
+
+void cinsert_first(int x){
+    CNode *n = new CNode{x,NULL};
+    if(chead == NULL){
+        chead = n;
+        n->next = n;
+    } else{
+        CNode *t = chead;
+        while(t->next != chead) t = t->next;
+        n->next = chead;
+        t->next = n;
+        chead = n;
+    }
+}
+
+void cinsert_last(int x){
+    CNode *n = new CNode{x,NULL};
+    if(chead == NULL){
+        chead = n;
+        n->next = n;
+    } else{
+        CNode *t = chead;
+        while(t->next != chead) t = t->next;
+        t->next = n;
+        n->next = chead;
+    }
+}
+
+void cinsert_after(int key, int x){
+    if(chead == NULL){ cout<<"List empty\n"; return; }
+    CNode *t = chead;
+    do{
+        if(t->data == key){
+            CNode *n = new CNode{x, t->next};
+            t->next = n;
+            return;
+        }
+        t = t->next;
+    } while(t != chead);
+    cout<<"Node not found\n";
+}
+
+void cdelete_node(int key){
+    if(chead == NULL){ cout<<"List empty\n"; return; }
+    CNode *t = chead, *prev = NULL;
+    if(chead->data == key){
+        if(chead->next == chead){
+            delete chead;
+            chead = NULL;
+        } else{
+            while(t->next != chead) t = t->next;
+            t->next = chead->next;
+            CNode *del = chead;
+            chead = chead->next;
+            delete del;
+        }
+        cout<<"Deleted\n";
+        return;
+    }
+    t = chead;
+    do{
+        prev = t;
+        t = t->next;
+        if(t->data == key){
+            prev->next = t->next;
+            delete t;
+            cout<<"Deleted\n";
+            return;
+        }
+    } while(t != chead);
+    cout<<"Node not found\n";
+}
+
+void csearch(int x){
+    if(chead == NULL){ cout<<"List empty\n"; return; }
+    CNode *t = chead;
+    do{
+        if(t->data == x){ cout<<"Found\n"; return; }
+        t = t->next;
+    } while(t != chead);
+    cout<<"Not found\n";
+}
+
+void cdisplay(){
+    if(chead == NULL){ cout<<"List empty\n"; return; }
+    CNode *t = chead;
+    do{
+        cout<<t->data<<" ";
+        t = t->next;
+    } while(t != chead);
+    cout<<"\n";
+}
+
+struct DNode{
+    int data;
+    DNode *next, *prev;
+};
+
+DNode *dhead = NULL;
+
+void dinsert_first(int x){
+    DNode *n = new DNode{x,NULL,NULL};
+    if(dhead == NULL){
+        dhead = n;
+    } else{
+        n->next = dhead;
+        dhead->prev = n;
+        dhead = n;
+    }
+}
+
+void dinsert_last(int x){
+    DNode *n = new DNode{x,NULL,NULL};
+    if(dhead == NULL){
+        dhead = n;
+    } else{
+        DNode *t = dhead;
+        while(t->next) t = t->next;
+        t->next = n;
+        n->prev = t;
+    }
+}
+
+void dinsert_after(int key, int x){
+    if(dhead == NULL){ cout<<"List empty\n"; return; }
+    DNode *t = dhead;
+    while(t){
+        if(t->data == key){
+            DNode *n = new DNode{x, t->next, t};
+            if(t->next) t->next->prev = n;
+            t->next = n;
+            return;
+        }
+        t = t->next;
+    }
+    cout<<"Node not found\n";
+}
+
+void ddelete_node(int key){
+    if(dhead == NULL){ cout<<"List empty\n"; return; }
+    DNode *t = dhead;
+    if(t->data == key){
+        dhead = t->next;
+        if(dhead) dhead->prev = NULL;
+        delete t;
+        cout<<"Deleted\n";
+        return;
+    }
+    while(t){
+        if(t->data == key){
+            if(t->next) t->next->prev = t->prev;
+            if(t->prev) t->prev->next = t->next;
+            delete t;
+            cout<<"Deleted\n";
+            return;
+        }
+        t = t->next;
+    }
+    cout<<"Node not found\n";
+}
+
+void dsearch(int x){
+    DNode *t = dhead;
+    while(t){
+        if(t->data == x){ cout<<"Found\n"; return; }
+        t = t->next;
+    }
+    cout<<"Not found\n";
+}
+
+void ddisplay(){
+    if(dhead == NULL){ cout<<"List empty\n"; return; }
+    DNode *t = dhead;
+    while(t){
+        cout<<t->data<<" ";
+        t = t->next;
+    }
+    cout<<"\n";
+}
+
+int main(){
+    int choice, x, key, sub;
+    while(true){
+        cout<<"\n1. Circular Linked List\n";
+        cout<<"2. Doubly Linked List\n";
+        cout<<"3. Exit\n";
+        cout<<"Enter choice: ";
+        cin>>choice;
+
+        if(choice == 1){
+            while(true){
+                cout<<"\n--- Circular Linked List Menu ---\n";
+                cout<<"1 Insert First\n";
+                cout<<"2 Insert Last\n";
+                cout<<"3 Insert After a Node\n";
+                cout<<"4 Delete a Node\n";
+                cout<<"5 Search\n";
+                cout<<"6 Display\n";
+                cout<<"7 Back\n";
+                cin>>sub;
+
+                if(sub==1){ cout<<"Enter data: "; cin>>x; cinsert_first(x); }
+                else if(sub==2){ cout<<"Enter data: "; cin>>x; cinsert_last(x); }
+                else if(sub==3){ cout<<"Insert after which node? "; cin>>key; cout<<"Data: "; cin>>x; cinsert_after(key,x); }
+                else if(sub==4){ cout<<"Delete which node? "; cin>>x; cdelete_node(x); }
+                else if(sub==5){ cout<<"Search: "; cin>>x; csearch(x); }
+                else if(sub==6){ cdisplay(); }
+                else break;
+            }
+        }
+
+        else if(choice == 2){
+            while(true){
+                cout<<"\n--- Doubly Linked List Menu ---\n";
+                cout<<"1 Insert First\n";
+                cout<<"2 Insert Last\n";
+                cout<<"3 Insert After a Node\n";
+                cout<<"4 Delete a Node\n";
+                cout<<"5 Search\n";
+                cout<<"6 Display\n";
+                cout<<"7 Back\n";
+                cin>>sub;
+
+                if(sub==1){ cout<<"Enter data: "; cin>>x; dinsert_first(x); }
+                else if(sub==2){ cout<<"Enter data: "; cin>>x; dinsert_last(x); }
+                else if(sub==3){ cout<<"Insert after which node? "; cin>>key; cout<<"Data: "; cin>>x; dinsert_after(key,x); }
+                else if(sub==4){ cout<<"Delete which node? "; cin>>x; ddelete_node(x); }
+                else if(sub==5){ cout<<"Search: "; cin>>x; dsearch(x); }
+                else if(sub==6){ ddisplay(); }
+                else break;
+            }
+        }
+
+        else break;
+    }
+    return 0;
+}
