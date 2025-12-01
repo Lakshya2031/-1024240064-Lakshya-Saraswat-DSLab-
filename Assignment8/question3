@@ -1,0 +1,74 @@
+#include<iostream>
+using namespace std;
+
+struct Node{
+    int data;
+    Node *left, *right;
+};
+
+Node* insertNode(Node *r, int x){
+    if(r == NULL) return new Node{x,NULL,NULL};
+    if(x < r->data) r->left = insertNode(r->left, x);
+    else if(x > r->data) r->right = insertNode(r->right, x);
+    return r;
+}
+
+Node* findMin(Node *r){
+    while(r->left) r = r->left;
+    return r;
+}
+
+Node* deleteNode(Node *r, int x){
+    if(r == NULL) return r;
+    if(x < r->data) r->left = deleteNode(r->left, x);
+    else if(x > r->data) r->right = deleteNode(r->right, x);
+    else{
+        if(r->left == NULL || r->right == NULL){
+            Node *t = r->left ? r->left : r->right;
+            if(t == NULL){
+                t = r;
+                r = NULL;
+            } else *r = *t;
+            delete t;
+        } else{
+            Node *t = findMin(r->right);
+            r->data = t->data;
+            r->right = deleteNode(r->right, t->data);
+        }
+    }
+    return r;
+}
+
+int maxDepth(Node *r){
+    if(r == NULL) return 0;
+    int l = maxDepth(r->left);
+    int rt = maxDepth(r->right);
+    return max(l, rt) + 1;
+}
+
+int minDepth(Node *r){
+    if(r == NULL) return 0;
+    int l = minDepth(r->left);
+    int rt = minDepth(r->right);
+    if(l == 0 || rt == 0) return l + rt + 1;
+    return min(l, rt) + 1;
+}
+
+int main(){
+    Node *root = NULL;
+    int n, x;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        cin>>x;
+        root = insertNode(root, x);
+    }
+
+    int del;
+    cin>>del;
+    root = deleteNode(root, del);
+
+    cout<<maxDepth(root)<<endl;
+    cout<<minDepth(root)<<endl;
+
+    return 0;
+}
